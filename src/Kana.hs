@@ -1,14 +1,18 @@
 module Kana (
   hiraMap,
   kataMap,
-  syllables
+  hiraSokuon,
+  kataSokuon,
+  syllables,
+  consonants,
 ) where
 
 import qualified Data.Map.Strict as M
+import qualified Data.Set        as S
 import           Data.Tuple      (swap)
 
-hiras :: [(String, String)]
-hiras = [
+hiraPair :: [(String, String)]
+hiraPair = [
   ("あ", "a"), ("い", "i"), ("う", "u"), ("え", "e"), ("お", "o"),
   ("か", "ka"), ("き", "ki"), ("く", "ku"), ("け", "ke"), ("こ", "ko"),
   ("が", "ga"), ("ぎ", "gi"), ("ぐ", "gu"), ("げ", "ge"), ("ご", "go"),
@@ -23,7 +27,7 @@ hiras = [
   ("ま", "ma"), ("み", "mi"), ("む", "mu"), ("め", "me"), ("も", "mo"),
   ("や", "ya"), ("ゆ", "yu"), ("よ", "yo"), ("ら", "ra"), ("り", "ri"),
   ("る", "ru"), ("れ", "re"), ("ろ", "ro"), ("わ", "wa"), ("を", "wo"),
-  ("ん", "nn"),
+  ("ん", "ng"),
   ("きゃ", "kya"), ("きゅ", "kyu"), ("きょ", "kyo"),
   ("ぎゃ", "gya"), ("ぎゅ", "gyu"), ("ぎょ", "gyo"),
   ("しゃ", "sha"), ("しゅ", "shu"), ("しょ", "sho"),
@@ -36,8 +40,8 @@ hiras = [
   ("みゃ", "mya"), ("みゅ", "myu"), ("みょ", "myo"),
   ("りゃ", "rya"), ("りゅ", "ryu"), ("りょ", "ryo") ]
 
-katas :: [(String, String)]
-katas = [
+kataPair :: [(String, String)]
+kataPair = [
   ("ア", "a"), ("イ", "i"), ("ウ", "u"), ("エ", "e"), ("オ", "o"),
   ("カ", "ka"), ("キ", "ki"), ("ク", "ku"), ("ケ", "ke"), ("コ", "ko"),
   ("ガ", "ga"), ("ギ", "gi"), ("グ", "gu"), ("ゲ", "ge"), ("ゴ", "go"),
@@ -52,7 +56,7 @@ katas = [
   ("マ", "ma"), ("ミ", "mi"), ("ム", "mu"), ("メ", "me"), ("モ", "mo"),
   ("ヤ", "ya"), ("ユ", "yu"), ("ヨ", "yo"), ("ラ", "ra"), ("リ", "ri"),
   ("ル", "ru"), ("レ", "re"), ("ロ", "ro"), ("ワ", "wa"), ("ヲ", "wo"),
-  ("ン", "nn"),
+  ("ン", "ng"),
   ("キャ", "kya"), ("キュ", "kyu"), ("キョ", "kyo"),
   ("ギャ", "gya"), ("ギュ", "gyu"), ("ギョ", "gyo"),
   ("シャ", "sha"), ("シュ", "shu"), ("ショ", "sho"),
@@ -66,10 +70,19 @@ katas = [
   ("リャ", "rya"), ("リュ", "ryu"), ("リョ", "ryo") ]
 
 hiraMap :: M.Map String String
-hiraMap = M.fromList (map swap hiras)
+hiraMap = M.fromList (map swap hiraPair)
 
 kataMap :: M.Map String String
-kataMap = M.fromList (map swap katas)
+kataMap = M.fromList (map swap kataPair)
+
+hiraSokuon :: Char
+hiraSokuon = 'っ'
+
+kataSokuon :: Char
+kataSokuon = 'ッ'
 
 syllables :: [String]
-syllables = map snd hiras
+syllables = map snd hiraPair
+
+consonants :: [Char]
+consonants = S.toList $ S.fromList (map head syllables) `S.difference` S.fromList "aiueo"
