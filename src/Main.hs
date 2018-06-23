@@ -4,7 +4,7 @@ import           Control.Monad      (forM_, unless)
 import qualified Data.Map.Strict    as M
 import           Data.Maybe         (fromJust)
 import           System.Environment (getArgs)
-import           System.Exit        (exitSuccess)
+import           System.Exit        (die)
 import           System.IO          (isEOF, readFile)
 import qualified Text.Parsec        as P
 
@@ -79,9 +79,7 @@ main = do
       inps <- lines <$> readFile f
       forM_ inps $ \inp ->
         case P.runParser top () f inp of
-          Left e  -> do
-            putStrLn (show e)
-            exitSuccess
+          Left e  -> die (show e)
           Right a -> putStrLn (pprint a)
 
     loop = do
@@ -89,7 +87,7 @@ main = do
       unless done $ do
         inp <- getLine
         case P.runParser top () "(stdin)" inp of
-          Left e  -> putStrLn (show e)
+          Left e  -> die (show e)
           Right a -> do
             putStrLn (pprint a)
             loop
