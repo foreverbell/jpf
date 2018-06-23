@@ -1,13 +1,15 @@
 module Main where
 
-import           Control.Monad    (unless)
-import qualified Data.Map.Strict  as M
-import           Data.Maybe       (fromJust)
-import           System.IO        (isEOF)
-import qualified Text.Parsec      as P
-import qualified Text.Parsec.Char as P
+import           Control.Monad      (forM_, unless)
+import qualified Data.Map.Strict    as M
+import           Data.Maybe         (fromJust)
+import           System.Environment (getArgs)
+import           System.Exit        (exitSuccess)
+import           System.IO          (isEOF, readFile)
+import qualified Text.Parsec        as P
+import qualified Text.Parsec.Char   as P
 
-import qualified Kana             as K
+import qualified Kana               as K
 
 type Parser = P.Parsec String ()
 
@@ -65,14 +67,36 @@ pprint xs = concatMap pprintHelper xs
         _   -> fromJust $ M.lookup r lookupMap
 
 main :: IO ()
-main = loop
+main = do
+  args <- getArgs
+  case args of
+    ["-h"] -> showHelp
+    []     -> loop
+    ["-"]  -> loop
+    [f]    -> read f
+    _      -> showHelp
   where
+    read f = do
+      inps <- lines <$> readFile f
+      forM_ inps $ \inp ->
+        case P.runParser top () f inp of
+          Left e  -> do
+            putStrLn (show e)
+            exitSuccess
+          Right a -> putStrLn (pprint a)
+
     loop = do
       done <- isEOF
       unless done $ do
         inp <- getLine
-        case P.runParser top () "" inp of
+        case P.runParser top () "(stdin)" inp of
           Left e  -> putStrLn (show e)
           Right a -> do
             putStrLn (pprint a)
             loop
+
+    showHelp = do
+      putStrLn "Usage [OPTION]... [FILE]"
+      putStrLn "Translate nested Romajis into Japanese Katas to standard output.\n"
+      putStrLn "With no FILE, or when FILE is -, read standard input.\n"
+      putStrLn "  -h  show this help\n"
