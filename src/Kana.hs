@@ -1,10 +1,10 @@
 module Kana (
-  hiras, hiraMap,
-  katas, kataMap,
+  hiraMap,
+  kataMap,
   syllables
 ) where
 
-import qualified Data.Map.Strict as Map
+import qualified Data.Map.Strict as M
 import Data.Tuple (swap)
 
 hiras :: [(String, String)]
@@ -23,7 +23,7 @@ hiras = [
   ("ま", "ma"), ("み", "mi"), ("む", "mu"), ("め", "me"), ("も", "mo"),
   ("や", "ya"), ("ゆ", "yu"), ("よ", "yo"), ("ら", "ra"), ("り", "ri"),
   ("る", "ru"), ("れ", "re"), ("ろ", "ro"), ("わ", "wa"), ("を", "wo"),
-  ("ん", "n"), 
+  ("ん", "nn"), 
   ("きゃ", "kya"), ("きゅ", "kyu"), ("きょ", "kyo"), 
   ("ぎゃ", "gya"), ("ぎゅ", "gyu"), ("ぎょ", "gyo"), 
   ("しゃ", "sha"), ("しゅ", "shu"), ("しょ", "sho"), 
@@ -52,7 +52,7 @@ katas = [
   ("マ", "ma"), ("ミ", "mi"), ("ム", "mu"), ("メ", "me"), ("モ", "mo"),
   ("ヤ", "ya"), ("ユ", "yu"), ("ヨ", "yo"), ("ラ", "ra"), ("リ", "ri"),
   ("ル", "ru"), ("レ", "re"), ("ロ", "ro"), ("ワ", "wa"), ("ヲ", "wo"),
-  ("ン", "n"), 
+  ("ン", "nn"), 
   ("キャ", "kya"), ("キュ", "kyu"), ("キョ", "kyo"), 
   ("ギャ", "gya"), ("ギュ", "gyu"), ("ギョ", "gyo"), 
   ("シャ", "sha"), ("シュ", "shu"), ("ショ", "sho"),
@@ -65,11 +65,11 @@ katas = [
   ("ミャ", "mya"), ("ミュ", "myu"), ("ミョ", "myo"), 
   ("リャ", "rya"), ("リュ", "ryu"), ("リョ", "ryo") ]
 
-hiraMap :: Map.Map String String
-hiraMap = Map.fromList (map swap hiras)
+hiraMap :: M.Map String String
+hiraMap = M.fromList (map swap hiras)
 
-kataMap :: Map.Map String String
-kataMap = Map.fromList (map swap katas)
+kataMap :: M.Map String String
+kataMap = M.fromList (map swap katas)
 
 syllables :: [String]
 syllables = map snd hiras
