@@ -7,7 +7,6 @@ import           System.Environment (getArgs)
 import           System.Exit        (exitSuccess)
 import           System.IO          (isEOF, readFile)
 import qualified Text.Parsec        as P
-import qualified Text.Parsec.Char   as P
 
 import qualified Kana               as K
 
